@@ -14,7 +14,7 @@
 - Do not claim state-of-the-art sequence-model training performance.
 - Do not claim replacement of the official JAX LinOSS repo or Discretax.
 - Do not claim complete active-inference, metacognitive-runtime, memory, or basin-runtime support.
-- Do not describe this package as production-stable until release work is complete.
+- Do not describe this package as production-stable until post-alpha release work is complete.
 
 ## Required Public Wording
 

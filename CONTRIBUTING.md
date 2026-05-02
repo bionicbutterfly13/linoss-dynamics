@@ -1,6 +1,6 @@
 # Contributing
 
-`linoss-dynamics` is currently a private pre-release package.
+`linoss-dynamics` is currently a public alpha package.
 
 ## Local Checks
 

@@ -2,7 +2,7 @@
 
 `linoss-dynamics` is a small NumPy runtime package for LinOSS-style oscillator dynamics.
 
-Status: private pre-release package. Not published to PyPI.
+Status: public alpha package. Not published to PyPI.
 
 ## What It Provides
 
@@ -51,4 +51,5 @@ From this repository root:
 ```bash
 python -m pytest tests -v --tb=short
 python -m ruff check src tests
+python -m compileall -q src tests
 ```

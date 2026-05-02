@@ -1,6 +1,6 @@
 # Provenance
 
-Status: required before public release.
+Status: active provenance record for public alpha.
 
 ## Upstream Foundations
 
