@@ -29,4 +29,5 @@ The package is planned as MIT because it is a pure math/runtime primitive with n
 
 - Package core: `src/linoss_dynamics/`
 - Package tests: `tests/`
-- Initial extraction source: `bionicbutterfly13/dionysus3-core`, Track 613-616 package split history.
+- Initial development source: `bionicbutterfly13/dionysus3-core`, before the
+  standalone package split and public repository publication.

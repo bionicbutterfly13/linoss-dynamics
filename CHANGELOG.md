@@ -6,3 +6,5 @@
 - NumPy-only LinOSS-style stepping helpers.
 - Explicit non-negative damping `G`.
 - Energy, delta-energy, and convergence-window helpers.
+- Public GitHub polish: expanded README, contribution guidance, issue templates,
+  pull-request template, and security policy.
