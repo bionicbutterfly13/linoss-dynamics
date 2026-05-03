@@ -127,6 +127,15 @@ python -m compileall -q src tests
 See [CONTRIBUTING.md](CONTRIBUTING.md), [PROVENANCE.md](PROVENANCE.md), and
 [CLAIMS.md](CLAIMS.md) before changing package behavior or public wording.
 
+## Citation
+
+If this package is useful in research or technical writing, cite the package
+metadata in [CITATION.cff](CITATION.cff) and cite the upstream LinOSS and
+D-LinOSS papers listed below.
+
+Release and publishing steps are tracked in
+[docs/release-checklist.md](docs/release-checklist.md).
+
 ## Attribution
 
 This package is not the original LinOSS or D-LinOSS research implementation.

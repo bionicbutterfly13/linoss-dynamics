@@ -8,3 +8,5 @@
 - Energy, delta-energy, and convergence-window helpers.
 - Public GitHub polish: expanded README, contribution guidance, issue templates,
   pull-request template, and security policy.
+- Release-readiness polish: citation metadata, package author metadata, release
+  checklist, and expanded project URLs.

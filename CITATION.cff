@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use linoss-dynamics, please cite this package and the upstream LinOSS / D-LinOSS papers listed in PROVENANCE.md."
+title: "linoss-dynamics"
+version: "0.1.0.dev0"
+date-released: 2026-05-03
+repository-code: "https://github.com/bionicbutterfly13/linoss-dynamics"
+url: "https://github.com/bionicbutterfly13/linoss-dynamics"
+license: "MIT"
+type: software
+authors:
+  - name: "linoss-dynamics contributors"
+abstract: "A small NumPy runtime package for LinOSS-style oscillator dynamics with explicit non-negative damping support."
+keywords:
+  - linoss
+  - oscillator dynamics
+  - state-space models
+  - numpy
+  - damping
+references:
+  - type: article
+    title: "Oscillatory State-Space Models"
+    authors:
+      - family-names: Rusch
+        given-names: T. Konstantin
+      - family-names: Rus
+        given-names: Daniela
+    year: 2024
+    url: "https://arxiv.org/abs/2410.03943"
+  - type: article
+    title: "Learning to Dissipate Energy in Oscillatory State-Space Models"
+    authors:
+      - family-names: Boyer
+        given-names: Jared
+      - family-names: Rusch
+        given-names: T. Konstantin
+      - family-names: Rus
+        given-names: Daniela
+    year: 2025
+    url: "https://arxiv.org/abs/2505.12171"
