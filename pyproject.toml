@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "linoss-dynamics"
-version = "0.1.0.dev0"
+version = "0.2.0"
 description = "Small NumPy runtime helpers for LinOSS-style oscillator dynamics with explicit damping."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "linoss-dynamics contributors" }]
-maintainers = [{ name = "linoss-dynamics contributors" }]
+authors = [{ name = "Mani Saint-Victor", email = "drmani215@gmail.com" }]
+maintainers = [{ name = "Mani Saint-Victor", email = "drmani215@gmail.com" }]
 keywords = ["linoss", "state-space-models", "oscillator", "dynamics", "numpy"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -31,6 +31,9 @@ dependencies = [
 test = [
     "pytest>=7.4",
     "ruff>=0.4",
+]
+probabilistic = [
+    "scipy>=1.10",
 ]
 
 [project.urls]

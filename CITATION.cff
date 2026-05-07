@@ -1,14 +1,16 @@
 cff-version: 1.2.0
 message: "If you use linoss-dynamics, please cite this package and the upstream LinOSS / D-LinOSS papers listed in PROVENANCE.md."
 title: "linoss-dynamics"
-version: "0.1.0.dev0"
-date-released: 2026-05-03
+version: "0.2.0"
+date-released: 2026-05-07
 repository-code: "https://github.com/bionicbutterfly13/linoss-dynamics"
 url: "https://github.com/bionicbutterfly13/linoss-dynamics"
 license: "MIT"
 type: software
 authors:
-  - name: "linoss-dynamics contributors"
+  - family-names: Saint-Victor
+    given-names: Mani
+    email: drmani215@gmail.com
 abstract: "A small NumPy runtime package for LinOSS-style oscillator dynamics with explicit non-negative damping support."
 keywords:
   - linoss
