@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [0.2.0] — 2026-05-06
+## [0.2.0] — 2026-05-07
 
 ### Added
 - `linoss_scan(U, A, dt, ...)` — sequence-level helper that runs `linoss_step` over a `(T, n)` input and returns the full trajectory.

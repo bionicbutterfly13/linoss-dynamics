@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use linoss-dynamics, please cite this package and the upstream LinOSS / D-LinOSS papers listed in PROVENANCE.md."
 title: "linoss-dynamics"
 version: "0.2.0"
-date-released: 2026-05-06
+date-released: 2026-05-07
 repository-code: "https://github.com/bionicbutterfly13/linoss-dynamics"
 url: "https://github.com/bionicbutterfly13/linoss-dynamics"
 license: "MIT"
