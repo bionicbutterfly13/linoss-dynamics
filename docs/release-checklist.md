@@ -1,8 +1,8 @@
 # Release Checklist
 
-`linoss-dynamics` is currently a public alpha package and is not published to
-PyPI. Use this checklist before creating a GitHub release, TestPyPI upload, or
-PyPI upload.
+`linoss-dynamics` is a public alpha package published on GitHub and PyPI. Use
+this checklist before creating a GitHub release, TestPyPI upload, or PyPI
+upload.
 
 ## Pre-Release Gate
 
