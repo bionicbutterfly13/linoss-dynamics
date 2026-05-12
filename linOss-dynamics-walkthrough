@@ -1,0 +1,368 @@
+
+
+M:  Summarize what problem it solves,
+  what its key methods do, and what design decisions stand out. Don't write
+  any article yet — just audit and explain back to me.
+
+L:  src/linoss_dynamics/solver.py:1 solves a practical runtime problem: advance oscillatory state through
+  time using NumPy, while keeping frequency/stiffness and damping separate.
+
+  For a cognition, active-inference, or memory audience: this is a small dynamics kernel for systems
+  where state is not just “stored,” but evolves. y is the displacement-like state, z is velocity-like
+  state, A controls how strongly the system oscillates, and G controls damping/forgetting. That makes
+  it useful as a deterministic substrate for oscillatory memory, control loops, replay-safe
+  simulations, or host systems that need simple state evolution without a deep-learning stack.
+
+  Key Methods / Functions
+
+  - linoss_step(...) is the main one-step update. It advances (y, z) by dt using A, optional forcing
+    via B/u, and either implicit or implicit_explicit mode.
+
+    meaning: It means linoss_step(...) takes the oscillator’s current state and computes its next state after one
+  small time interval.
+
+  In this code:
+
+  - y = current position / displacement-like state
+  - z = current velocity / momentum-like state
+  - dt = how far forward in time to step
+  - A = stiffness / frequency parameter; it controls how strongly the system “pulls back” and
+    oscillates
+  - B and u = optional external input; they let something outside the oscillator push or drive it
+  - mode = the numerical stepping rule used to compute the next state
+
+  So conceptually:
+
+  y_next, z_next, metrics = linoss_step(y, z, A, dt=0.1)
+
+  means:
+
+  “Given where the oscillator is now (y) and how fast it is moving (z), move it forward by 0.1 time
+  units under stiffness/frequency A, and tell me the new position, new velocity, and energy metrics.”
+
+  implicit and implicit_explicit are two different numerical update schemes. The important practical
+  difference is that implicit is generally more stable for oscillator dynamics, while implicit_explicit
+  is a split update style that is closer to a direct step but has stricter stability limits.
+
+   Example from this project’s API:
+
+  import numpy as np
+  from linoss_dynamics import linoss_step
+
+  y = np.array([1.0])   # current position: displaced from center
+  z = np.array([0.0])   # current velocity: not moving yet
+  A = np.array([4.0])   # stiffness/frequency: stronger pull back
+  dt = 0.1              # move forward 0.1 time units
+
+  y_next, z_next, metrics = linoss_step(
+      y,
+      z,
+      A,
+      dt=dt,
+      mode="implicit",
+  )
+
+  print(y_next)
+  print(z_next)
+  print(metrics)
+
+  What this means physically:
+
+  You start with the oscillator pulled away from center: y = 1.0.
+
+  It has no velocity yet: z = 0.0.
+
+  Because A = 4.0, the system pulls back toward center. After one step, y_next should be slightly
+  smaller than 1.0, and z_next should be negative because the oscillator has started moving back.
+
+  For this specific input, the update is approximately:
+
+  y_next = [0.96153846]
+  z_next = [-0.38461538]
+
+  The metrics look like:
+
+  {
+      "mode": "implicit",
+      "energy_before": 2.0,
+      "energy_after": 1.923076923076923,
+      "delta_energy": -0.0769230769230771,
+      "damping_mode": "none",
+  }
+
+  So in plain language:
+
+  “Start at position 1.0, standing still. Step forward by 0.1. The oscillator begins moving back toward
+  center, so position becomes about 0.96, velocity becomes about -0.38, and the solver reports the
+  energy before and after the step.”
+
+  A more grounded way to say it:
+
+  Imagine you are tracking a person’s attention during a work session.
+
+  Their focus does not just go up or down randomly. It often has rhythm: they engage, fatigue, recover,
+  get pulled by a stimulus, settle again. You can model that as an oscillator.
+
+  In that use case:
+
+  - y = current attention level relative to baseline
+    Example: y = 1.0 means attention is elevated.
+  - z = momentum of attention
+    Example: z = 0.0 means attention is not currently rising or falling.
+  - A = how strongly the system tends to cycle back
+    A higher A means attention snaps back or oscillates faster.
+  - dt = the time step
+    Example: move the model forward by 6 seconds, 1 minute, etc.
+  - B/u = external input
+    Example: a notification, memory cue, task prompt, alarm, or environmental stimulus.
+  - G = damping / forgetting
+    Example: how quickly the attention spike fades instead of ringing forever.
+
+  So linoss_step(...) could mean:
+
+  “Given this person’s current attention state and whether that attention is rising or falling, predict
+  the next moment after a cue or interruption, while accounting for the natural rhythm of attention and
+  how quickly that rhythm fades.”
+
+  Concrete example:
+
+  A notification arrives while someone is focused.
+
+  Before:
+  attention is high
+  attention momentum is flat
+  a notification pushes the system
+  damping controls how quickly the disturbance fades
+
+  After one step:
+  attention may dip or shift
+  momentum changes
+  energy tells you whether the system is still activated or settling
+
+  For memory, the analogy is similar:
+
+  y is how active a memory trace is right now.
+
+  z is whether that trace is becoming more or less active.
+
+  A is the tendency of that trace to recur rhythmically.
+
+  G is forgetting or stabilization pressure.
+
+  B/u is a cue that reactivates the memory.
+
+  Then linoss_step(...) means:
+
+  “Given the current activation of a memory and its direction of change, move it forward one moment
+  after a cue, and tell me whether the memory trace is amplifying, fading, or settling.”
+
+
+
+
+
+-------------------
+
+
+
+
+
+  - damped_linoss_step(...) is the explicit damping path. It takes G, validates that it is non-
+    negative, and applies damping without folding it into A.
+
+    damped_linoss_step(...) means: update the oscillator, but also include a separate “fade-out” or
+  “settling” force.
+
+  In plain terms:
+
+  linoss_step(...) answers:
+
+  “Where does the oscillating state go next?”
+
+  damped_linoss_step(...) answers:
+
+  “Where does it go next if the system is also losing energy over time?”
+
+  The important part is that this package keeps two things separate:
+
+  - A = how strongly/frequently the system oscillates
+  - G = how quickly the oscillation fades, settles, or forgets
+
+  So “without folding it into A” means the code does not pretend damping is just a change in frequency.
+  It treats damping as its own control.
+
+  Example use case:
+
+  Imagine a memory cue reactivates a thought.
+
+  Without damping, the thought might keep ringing:
+
+  cue -> memory activates -> keeps cycling strongly
+
+  With damping:
+
+  cue -> memory activates -> cycles briefly -> fades back down
+
+  In code terms:
+
+  from linoss_dynamics import damped_linoss_step
+  import numpy as np
+
+  y = np.array([1.0])   # memory/attention is activated
+  z = np.array([0.0])   # no current momentum
+  A = np.array([4.0])   # how strongly it oscillates
+  G = np.array([0.5])   # how strongly it fades/settles
+
+  y_next, z_next, metrics = damped_linoss_step(y, z, A, G, dt=0.1)
+
+  G must be non-negative because negative damping would mean the system injects energy instead of
+  dissipating it. In a cognition analogy, negative damping would be like a memory trace that
+  automatically intensifies forever instead of fading or stabilizing.
+
+ ---------------------------
+
+
+  - linoss_scan(...) runs the step repeatedly over an input sequence and returns full Y, Z, and per-
+    step metrics. This is the sequence-level wrapper.
+
+    An input sequence is a list of outside pushes over time.
+
+  If linoss_step(...) is one moment:
+
+  what happens in the next 0.1 seconds?
+
+  then linoss_scan(...) is many moments in a row:
+
+  what happens over the next 100 moments?
+
+  Example: attention over time.
+
+  Each item in the input sequence could be a cue, interruption, task prompt, or stimulus:
+
+  import numpy as np
+  from linoss_dynamics import linoss_scan
+
+  U = np.array([
+      [0.0],  # no stimulus
+      [0.0],  # no stimulus
+      [1.0],  # notification arrives
+      [0.5],  # weaker follow-up cue
+      [0.0],  # no stimulus
+      [0.0],  # no stimulus
+  ])
+
+  Here, U is the input sequence.
+
+  Then:
+
+  A = np.array([4.0])
+
+  Y, Z, metrics = linoss_scan(U, A, dt=0.1)
+
+  means:
+
+  “Start the oscillator, apply these outside inputs one after another, and give me the full history.”
+
+  The outputs:
+
+  - Y = all positions / activation levels over time
+  - Z = all velocities / momentum values over time
+  - metrics = energy and mode info for each step
+
+  In a memory example:
+
+  U[0] = no cue
+  U[1] = no cue
+  U[2] = memory cue appears
+  U[3] = related cue appears
+  U[4] = no cue
+  U[5] = no cue
+
+  So linoss_scan(...) lets you ask:
+
+  “How does the memory trace evolve across a whole stream of cues, not just one instant?”
+
+  
+• A real-world example: daily symptom tracking after caffeine.
+
+  Say you want to model someone’s anxiety/arousal through the morning.
+
+  The “input sequence” is what happens at each time step:
+
+  8:00  no caffeine
+  8:15  coffee
+  8:30  coffee still affecting system
+  8:45  no new caffeine
+  9:00  stressful email
+  9:15  no new stimulus
+  9:30  breathing exercise
+  9:45  no new stimulus
+
+  In linoss_scan(...), that becomes a sequence of outside pushes:
+
+  import numpy as np
+  from linoss_dynamics import linoss_scan
+
+  U = np.array([
+      [0.0],   # 8:00 no stimulus
+      [1.0],   # 8:15 coffee
+      [0.7],   # 8:30 lingering caffeine effect
+      [0.0],   # 8:45 no new stimulus
+      [1.2],   # 9:00 stressful email
+      [0.0],   # 9:15 no new stimulus
+      [-0.8],  # 9:30 calming intervention
+      [0.0],   # 9:45 no new stimulus
+  ])
+
+  A = np.array([2.0])
+
+  Y, Z, metrics = linoss_scan(U, A, dt=0.25)
+
+  What this means in reality:
+
+  - U is the timeline of outside events.
+  - Y is the modeled arousal level at each time point.
+  - Z is whether arousal is rising or falling.
+  - metrics tells you whether the system is gaining or losing energy at each step.
+
+  So instead of asking:
+
+  “Where is arousal after one coffee?”
+
+  you ask:
+
+  “How does arousal evolve across coffee, a stressful email, and a calming intervention over the whole
+  morning?”
+
+
+
+ 
+ -----------------------
+
+
+  - energy(...), delta_energy(...), and convergence_window(...) expose diagnostics: how much energy the
+    oscillator has, whether energy changed, and whether recent changes look settled.
+  - _state_vectors(...), _diagonal_vector(...), _forcing_vector(...), and _normalize_mode(...) are
+    internal contract enforcers. They normalize inputs, reject bad shapes, resolve forcing, and keep
+    mode names consistent.
+
+  Design Decisions That Stand Out
+
+  The strongest design decision is the A / G boundary. A means stiffness/frequency; G means damping/
+  forgetting. That is exactly aligned with the updated AGENTS.md instruction to preserve this boundary
+  and explain what this package does specifically relative to LinOSS.
+
+  The second major decision is no stateful model class. Everything is explicit: arrays in, arrays and
+  metrics out. That makes the code easier to test, replay, port, and embed in host systems.
+
+  The third is dependency discipline. The core solver is NumPy-only and does not import host
+  frameworks, agent runtimes, graph databases, event buses, JAX, or Discretax. That matches docs/
+  architecture.md:1.
+
+  The fourth is observability through metrics. Each step returns energy before/after, signed energy
+  delta, mode, and damping mode. That gives developers and cognition-oriented readers a concrete way to
+  inspect whether the state is ringing, dissipating, or settling.
+
+  Relation to LinOSS: this is not “the LinOSS implementation” and should not be described as inventing
+  LinOSS or D-LinOSS. It is a NumPy runtime implementation of LinOSS-style oscillator stepping with
+  explicit damping support.
+

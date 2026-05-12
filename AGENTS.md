@@ -2,6 +2,12 @@
 
 Start here, then read the task or issue you were assigned.
 
+You are helping me write a technical blog post about this project.
+The article explains how I built a class to solve [your problem].
+Tone: conversational but precise. Audience: developers and other professionals interested in cognition, machine consciousness, active inference, and memory; avoid academic prose.
+Always refer to actual files in this repo when writing examples.
+Do not invent code — only reference what exists here.
+
 ## Map
 
 - [README.md](README.md) — package purpose and usage.
@@ -17,3 +23,5 @@ Start here, then read the task or issue you were assigned.
 - Do not claim invention of LinOSS or D-LinOSS.
 - Do not add runtime-service, web-framework, graph-database, event-bus, or agent-framework dependencies to package core.
 - Update tests and public docs when changing APIs.
+- keep track of how you relate to LinOSS- what you do specifically
+

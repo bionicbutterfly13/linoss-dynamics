@@ -167,6 +167,10 @@ print(f"fitted period = {result['period']:.3f} s")
 
 Runnable tutorials for all use cases are in [examples/](examples/README.md).
 
+For a single bounded prompt/context packet covering the package purpose, symbol
+surface, LinOSS relationship, and adjacent technology categories, see
+[docs/heredoc-context.md](docs/heredoc-context.md).
+
 ## Numerical Contract
 
 `A` controls oscillator stiffness/frequency.

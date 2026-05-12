@@ -7,6 +7,8 @@
 - The package is dependency-light and intended for agent runtimes, control loops, examples, and tests.
 - The package separates stiffness/frequency (`A`) from damping/forgetting (`G`).
 
+## Explanation of purpose
+
 ## Forbidden Claims
 
 - Do not claim invention of LinOSS.
@@ -21,6 +23,7 @@
 Use wording like:
 
 > A NumPy runtime package for LinOSS-style oscillator dynamics with explicit damping support, inspired by LinOSS and D-LinOSS research.
+  - Make sure you explain the relationship 
 
 Avoid wording like:
 
